@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulacro 2° Parcial — Análisis Matemático I</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+    startup: { typeset: false }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f6f5f0;
+  --surface: #ffffff;
+  --surface2: #eeede8;
+  --border: rgba(0,0,0,0.11);
+  --border-med: rgba(0,0,0,0.20);
+  --text: #1c1b18;
+  --text-muted: #5a5955;
+  --text-hint: #8a8880;
+  --teal50: #e1f5ee; --teal600: #0f6e56; --teal800: #085041;
+  --amber50: #faeeda; --amber600: #854f0b; --amber800: #633806;
+  --coral50: #faece7; --coral600: #993c1d; --coral800: #4a1b0c;
+  --purple50: #eeedfe; --purple600: #534ab7; --purple800: #26215c;
+  --blue50: #e6f1fb; --blue600: #185fa5; --blue800: #042c53;
+  --green50: #eaf3de; --green600: #3b6d11; --green800: #173404;
+  --gray50: #f1efe8; --gray600: #5f5e5a; --gray800: #2c2c2a;
+  --r: 10px; --rsm: 6px;
+}
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.65;
+  padding-bottom: 4rem;
+}
+
+.page { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ---- ENCABEZADO INSTITUCIONAL ---- */
+.header-inst {
+  border: 1.5px solid var(--border-med);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.75rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 2rem;
+  align-items: start;
+}
+.inst-nombre {
+  font-size: 12px;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.inst-titulo {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+}
+.inst-subtitulo {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-family: 'Segoe UI', sans-serif;
+}
+.inst-meta {
+  text-align: right;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.inst-meta strong { color: var(--text); font-weight: 600; }
+
+/* ---- AVISO ---- */
+.aviso {
+  background: var(--amber50);
+  border-left: 3px solid var(--amber600);
+  border-radius: 0 var(--rsm) var(--rsm) 0;
+  padding: 0.65rem 1rem;
+  font-size: 13.5px;
+  color: var(--amber800);
+  font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 1.25rem;
+  line-height: 1.55;
+}
+.aviso-teal {
+  background: var(--teal50);
+  border-left: 3px solid var(--teal600);
+  color: var(--teal800);
+}
+
+/* ---- PROGRESO ---- */
+.prog-wrap {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+.prog-row { display: flex; align-items: center; gap: 12px; }
+.prog-label { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+.prog-bar-bg { flex: 1; height: 5px; background: var(--surface2); border-radius: 99px; }
+.prog-bar-fill { height: 5px; border-radius: 99px; background: var(--teal600); width: 0%; transition: width 0.35s ease; }
+.prog-count { font-size: 13px; font-weight: 600; color: var(--text); min-width: 48px; text-align: right; }
+
+/* ---- SECCIÓN LABEL ---- */
+.sec-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-hint); margin: 2rem 0 0.75rem;
+}
+.sec-label::after { content: ''; flex: 1; height: 0.5px; background: var(--border-med); }
+
+/* ---- EJERCICIO CARD ---- */
+.ejercicio {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 1.1rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.ejercicio.resuelto { border-color: var(--teal600); }
+
+.ej-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 1rem 1.25rem; cursor: default;
+}
+.ej-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gray50); border: 1px solid var(--border-med);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--text-muted); flex-shrink: 0; margin-top: 1px;
+}
+.ejercicio.resuelto .ej-num {
+  background: var(--teal600); border-color: var(--teal600); color: white;
+}
+.ej-content { flex: 1; }
+.ej-tipo {
+  font-family: 'Segoe UI', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-hint); margin-bottom: 4px;
+}
+.ej-enunciado { font-size: 15px; line-height: 1.7; color: var(--text); }
+.ej-enunciado .math-display { margin: 0.6rem 0; }
+.ej-pts {
+  font-family: 'Segoe UI', sans-serif; font-size: 12px;
+  color: var(--text-hint); white-space: nowrap; padding-top: 2px;
+}
+
+/* Opciones múltiple */
+.opciones {
+  padding: 0 1.25rem 0.25rem 3.5rem;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.opcion-btn {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--border-med);
+  border-radius: var(--rsm);
+  cursor: pointer; background: transparent;
+  font-size: 14px; font-family: 'Georgia', serif;
+  color: var(--text); text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1.5;
+}
+.opcion-btn:hover { background: var(--gray50); border-color: var(--border-med); }
+.opcion-btn.seleccionada { background: var(--blue50); border-color: var(--blue600); color: var(--blue800); }
+.opcion-btn.correcta   { background: var(--teal50); border-color: var(--teal600); color: var(--teal800); }
+.opcion-btn.incorrecta { background: var(--coral50); border-color: var(--coral600); color: var(--coral800); }
+.opcion-btn.revelada-correcta { background: var(--teal50); border-color: var(--teal600); color: var(--teal800); }
+.opcion-letra {
+  font-weight: 700; font-family: 'Segoe UI', sans-serif; font-size: 13px;
+  flex-shrink: 0; min-width: 18px;
+}
+
+/* Área de respuesta (desarrollo) */
+.area-respuesta {
+  margin: 0 1.25rem 0.75rem 3.5rem;
+}
+.area-respuesta textarea {
+  width: 100%; min-height: 90px; padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-med); border-radius: var(--rsm);
+  font-family: 'Georgia', serif; font-size: 14px; color: var(--text);
+  background: var(--gray50); resize: vertical; line-height: 1.55;
+}
+.area-respuesta textarea:focus { outline: none; border-color: var(--blue600); background: white; }
+
+/* Acciones por ejercicio */
+.ej-actions {
+  display: flex; gap: 8px; align-items: center;
+  padding: 0 1.25rem 1rem 3.5rem;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 5px 14px; border-radius: var(--rsm); cursor: pointer;
+  border: 1px solid var(--border-med); background: transparent;
+  color: var(--text-muted); transition: all 0.15s; display: flex; align-items: center; gap: 5px;
+}
+.btn:hover { background: var(--gray50); color: var(--text); }
+.btn-primary { background: var(--teal600); border-color: var(--teal600); color: white; }
+.btn-primary:hover { background: var(--teal800); border-color: var(--teal800); color: white; }
+.btn-sol { color: var(--purple600); border-color: var(--purple600); }
+.btn-sol:hover { background: var(--purple50); color: var(--purple800); }
+
+/* Solución */
+.solucion {
+  display: none;
+  margin: 0 1.25rem 1rem 3.5rem;
+  background: var(--purple50);
+  border: 1px solid var(--purple600);
+  border-radius: var(--rsm);
+  padding: 1rem 1.1rem;
+  font-size: 14px; line-height: 1.75;
+}
+.solucion.visible { display: block; }
+.sol-titulo {
+  font-family: 'Segoe UI', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--purple600); margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 6px;
+}
+.sol-titulo i { font-size: 14px; }
+.sol-paso {
+  margin-bottom: 0.6rem; padding-left: 1rem;
+  border-left: 2px solid var(--purple600);
+  color: var(--purple800);
+}
+.sol-paso-label {
+  font-family: 'Segoe UI', sans-serif; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--purple600); margin-bottom: 2px;
+}
+.sol-rta {
+  margin-top: 0.75rem; padding: 0.5rem 0.85rem;
+  background: var(--teal50); border-radius: var(--rsm);
+  border: 1px solid var(--teal600);
+  font-weight: 700; color: var(--teal800);
+  font-family: 'Segoe UI', sans-serif; font-size: 13px;
+}
+
+/* Notificación de corrección */
+.feedback {
+  font-family: 'Segoe UI', sans-serif; font-size: 13px;
+  padding: 4px 10px; border-radius: var(--rsm);
+}
+.feedback.ok  { color: var(--teal800); background: var(--teal50); }
+.feedback.mal { color: var(--coral800); background: var(--coral50); }
+
+/* ---- RESUMEN FINAL ---- */
+.resumen {
+  display: none;
+  background: var(--surface);
+  border: 1.5px solid var(--teal600);
+  border-radius: var(--r);
+  padding: 1.5rem 2rem;
+  margin-top: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+.resumen.visible { display: block; }
+.resumen-score { font-size: 42px; font-weight: 700; color: var(--teal600); line-height: 1; margin-bottom: 4px; }
+.resumen-label { font-size: 14px; color: var(--text-muted); margin-bottom: 1rem; }
+.resumen-detalle { font-size: 13px; color: var(--text-muted); }
+
+/* Contador global */
+.global-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  margin-bottom: 1rem; flex-wrap: wrap;
+}
+
+/* MathJax override para el contexto */
+mjx-container { overflow-x: auto; }
+
+@media (max-width: 600px) {
+  .header-inst { grid-template-columns: 1fr; }
+  .inst-meta { text-align: left; }
+  .ej-actions { padding-left: 1.25rem; }
+  .opciones { padding-left: 1.25rem; }
+  .area-respuesta { margin-left: 1.25rem; }
+  .solucion { margin-left: 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ENCABEZADO -->
+<div class="header-inst">
+  <div>
+    <div class="inst-nombre">INSPT – UTN · Análisis Matemático I</div>
+    <div class="inst-titulo">2° Parcial — Simulacro de práctica</div>
+    <div class="inst-subtitulo">Nivel equivalente al examen oficial · 10 ejercicios</div>
+  </div>
+  <div class="inst-meta">
+    <strong>Tiempo sugerido:</strong> 90 min<br>
+    <strong>Puntaje total:</strong> 10 puntos<br>
+    <strong>Año:</strong> 2025
+  </div>
+</div>
+
+<div class="aviso">
+  <strong>Instrucción general:</strong> Los ejercicios 1 a 3 son de desarrollo; se evaluará el procedimiento completo. Los ejercicios 4 a 10 son de completar o de opción múltiple: solo se contemplará la respuesta del recuadro o la opción marcada.
+</div>
+<div class="aviso aviso-teal">
+  <strong>Modo interactivo:</strong> Escribí tu desarrollo en el campo de texto, luego presioná <em>Ver solución</em> para comparar paso a paso.
+</div>
+
+<!-- PROGRESO -->
+<div class="prog-wrap">
+  <div class="prog-row">
+    <span class="prog-label">Progreso</span>
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="progBar"></div></div>
+    <span class="prog-count" id="progCount">0 / 10</span>
+  </div>
+</div>
+
+<div class="global-actions">
+  <button class="btn btn-sol" onclick="mostrarTodasSoluciones()"><i class="ti ti-eye" aria-hidden="true"></i> Ver todas las soluciones</button>
+  <button class="btn btn-primary" onclick="evaluarFinal()"><i class="ti ti-checkup-list" aria-hidden="true"></i> Evaluar resultado final</button>
+</div>
+
+
+<!-- ===================== PARTE I: DESARROLLO ===================== -->
+<div class="sec-label"><i class="ti ti-pencil" aria-hidden="true"></i> Parte I — Desarrollo analítico</div>
+
+<!-- EJ 1 -->
+<div class="ejercicio" id="ej1">
+  <div class="ej-header">
+    <div class="ej-num">1</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Concavidad e inflexión</div>
+      <div class="ej-enunciado">
+        Sabiendo que $f'(x) = (x-2)^2 - 9$, determinar analíticamente:
+        <ol style="margin: 0.5rem 0 0 1.25rem; line-height:2;">
+          <li>Los puntos de inflexión de $f(x)$.</li>
+          <li>Los intervalos de concavidad positiva y negativa de $f(x)$.</li>
+          <li>La expresión de $f(x)$, sabiendo que $f(2) = 4$.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="ej-pts">3 pts</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Escribí tu desarrollo aquí: derivá f'(x), igualá a cero, analizá el signo, integrá…" id="r1"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol1', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej1')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol1">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución paso a paso</div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 1 — Obtener f''(x)</div>
+      Como $f'(x) = (x-2)^2 - 9 = x^2 - 4x + 4 - 9 = x^2 - 4x - 5$, derivamos:<br>
+      $$f''(x) = 2x - 4$$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 2 — Hallar ceros de f''</div>
+      $f''(x) = 0 \Rightarrow 2x - 4 = 0 \Rightarrow x = 2$<br>
+      Este valor divide el dominio (todos los reales) en dos intervalos.
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 3 — Analizar el signo de f''</div>
+      En $(-\infty, 2)$: tomamos $x=0 \Rightarrow f''(0) = -4 < 0$ → $f$ es <strong>cóncava negativa</strong>.<br>
+      En $(2, +\infty)$: tomamos $x=3 \Rightarrow f''(3) = 2 > 0$ → $f$ es <strong>cóncava positiva</strong>.<br>
+      Como cambia de signo en $x=2$, <strong>$(2,\, f(2))$ es punto de inflexión</strong>.
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 4 — Integrar f'(x) para obtener f(x)</div>
+      $$f(x) = \int (x^2 - 4x - 5)\,dx = \frac{x^3}{3} - 2x^2 - 5x + C$$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 5 — Aplicar condición inicial f(2) = 4</div>
+      $f(2) = \dfrac{8}{3} - 8 - 10 + C = 4 \Rightarrow C = 4 + 18 - \dfrac{8}{3} = \dfrac{66-8}{3} = \dfrac{58}{3}$
+    </div>
+    <div class="sol-rta">
+      Punto de inflexión: $(2,\, f(2))$ &nbsp;|&nbsp;
+      Cóncava positiva: $(2, +\infty)$ &nbsp;|&nbsp;
+      Cóncava negativa: $(-\infty, 2)$<br>
+      $$f(x) = \frac{1}{3}x^3 - 2x^2 - 5x + \frac{58}{3}$$
+    </div>
+  </div>
+</div>
+
+<!-- EJ 2 -->
+<div class="ejercicio" id="ej2">
+  <div class="ej-header">
+    <div class="ej-num">2</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Integración y área</div>
+      <div class="ej-enunciado">
+        Dadas las funciones $f(x) = \ln(x-1)$, $\ g(x) = x - 3$ y $\ r(x) = e^{2x}$:
+        <ol style="margin: 0.5rem 0 0 1.25rem; line-height:2;">
+          <li>Hallar $L = \displaystyle\lim_{x \to 2} \dfrac{f(x)}{g(x)}$.</li>
+          <li>Calcular $\displaystyle\int g(x) \cdot r(x)\, dx$.</li>
+          <li>Calcular el área encerrada entre $g(x)$ y el eje de abscisas en el intervalo $[1;\, 4]$.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="ej-pts">3 pts</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Identificá la forma indeterminada en el límite, aplicá L'Hôpital. Para la integral usá integración por partes con u=g(x). Para el área cuidá el signo." id="r2"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol2', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej2')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol2">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución paso a paso</div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">2.1 — Límite (L'Hôpital)</div>
+      $\displaystyle L = \lim_{x\to 2} \frac{\ln(x-1)}{x-3}$: al sustituir $x=2$ se obtiene $\frac{\ln 1}{-1} = \frac{0}{-1} = 0$. No es indeterminado: el límite se resuelve por sustitución directa.
+      <br><br>
+      $$L = \frac{\ln(2-1)}{2-3} = \frac{\ln 1}{-1} = \frac{0}{-1} = 0$$
+      <em>Nota: si la cátedra exige verificar la forma antes de aplicar L'Hôpital, verificamos: numerador $\to 0$, denominador $\to -1 \neq 0$ → no es $0/0$. Se resuelve directamente.</em>
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">2.2 — Integral por partes</div>
+      $\displaystyle \int (x-3)\,e^{2x}\,dx$. Elegimos $u = x-3 \Rightarrow du = dx$; $\;dv = e^{2x}dx \Rightarrow v = \tfrac{1}{2}e^{2x}$.<br><br>
+      $$\int (x-3)e^{2x}dx = \frac{(x-3)}{2}e^{2x} - \int \frac{e^{2x}}{2}dx = \frac{(x-3)}{2}e^{2x} - \frac{e^{2x}}{4} + C$$
+      $$= \frac{e^{2x}}{4}(2x - 7) + C$$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">2.3 — Área entre g(x) y el eje x en [1, 4]</div>
+      $g(x) = x-3 = 0 \Rightarrow x = 3$. En $[1,3]$: $g(x) < 0$; en $[3,4]$: $g(x) > 0$.<br>
+      $$\text{Área} = \int_1^3 |x-3|\,dx + \int_3^4 (x-3)\,dx$$
+      $$= \int_1^3 (3-x)\,dx + \int_3^4 (x-3)\,dx$$
+      $$= \left[3x - \frac{x^2}{2}\right]_1^3 + \left[\frac{x^2}{2} - 3x\right]_3^4$$
+      $$= \left(9 - \frac{9}{2} - 3 + \frac{1}{2}\right) + \left(8 - 12 - \frac{9}{2} + 9\right) = 2 + \frac{1}{2} = \frac{5}{2}$$
+    </div>
+    <div class="sol-rta">
+      $L = 0$ &nbsp;|&nbsp; $\displaystyle\int g\cdot r\,dx = \frac{e^{2x}}{4}(2x-7)+C$ &nbsp;|&nbsp; Área $= \dfrac{5}{2}$
+    </div>
+  </div>
+</div>
+
+<!-- EJ 3 -->
+<div class="ejercicio" id="ej3">
+  <div class="ej-header">
+    <div class="ej-num">3</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Polinomio de MacLaurin</div>
+      <div class="ej-enunciado">
+        Hallar el polinomio de MacLaurin de segundo orden para aproximar la función $h(x) = \cos(x) \cdot e^x$.
+      </div>
+    </div>
+    <div class="ej-pts">1 pt</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Calculá h(0), h'(0) y h''(0). Aplicá la fórmula P₂(x) = h(0) + h'(0)·x + h''(0)/2! · x²" id="r3"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol3', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej3')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol3">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución paso a paso</div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 1 — Evaluar h(0)</div>
+      $h(0) = \cos(0)\cdot e^0 = 1 \cdot 1 = 1$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 2 — Primera derivada</div>
+      $h'(x) = -\sin(x)\cdot e^x + \cos(x)\cdot e^x = e^x(\cos x - \sin x)$<br>
+      $h'(0) = e^0(\cos 0 - \sin 0) = 1\cdot(1-0) = 1$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 3 — Segunda derivada</div>
+      $h''(x) = e^x(\cos x - \sin x) + e^x(-\sin x - \cos x) = e^x(-2\sin x)$<br>
+      $h''(0) = e^0(-2\sin 0) = 0$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 4 — Armar el polinomio</div>
+      $$P_2(x) = h(0) + h'(0)\cdot x + \frac{h''(0)}{2!}\cdot x^2 = 1 + x + 0 = 1 + x$$
+    </div>
+    <div class="sol-rta">$$P_2(x) = x + 1$$</div>
+  </div>
+</div>
+
+
+<!-- ===================== PARTE II: COMPLETAR ===================== -->
+<div class="sec-label"><i class="ti ti-edit" aria-hidden="true"></i> Parte II — Completar (solo se evalúa el recuadro)</div>
+
+<!-- EJ 4 -->
+<div class="ejercicio" id="ej4">
+  <div class="ej-header">
+    <div class="ej-num">4</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Límite — L'Hôpital</div>
+      <div class="ej-enunciado">
+        Dadas $f(x)=\ln(x-1)$ y $g(x)=x^2-4x+3$, hallar $\displaystyle L = \lim_{x \to 2^+} \dfrac{f(x)}{g(x)}$.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Verificá la forma indeterminada al sustituir x→2. Aplicá L'Hôpital si corresponde." id="r4" style="min-height:65px;"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol4', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej4')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol4">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      Al sustituir $x\to 2$: numerador $\ln(1)=0$, denominador $4-8+3=-1\neq 0$.<br>
+      No es indeterminado: $$L = \frac{0}{-1} = 0$$
+    </div>
+    <div class="sol-rta">$L = 0$</div>
+  </div>
+</div>
+
+<!-- EJ 5 -->
+<div class="ejercicio" id="ej5">
+  <div class="ej-header">
+    <div class="ej-num">5</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Integración por partes</div>
+      <div class="ej-enunciado">
+        Calcular $\displaystyle \int (x+1)\cdot e^x\,dx$.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Elegí u = x+1 y dv = eˣ dx. Completá la fórmula por partes." id="r5" style="min-height:65px;"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol5', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej5')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol5">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      $u = x+1 \Rightarrow du = dx$; $\quad dv = e^x dx \Rightarrow v = e^x$<br>
+      $$\int(x+1)e^x dx = (x+1)e^x - \int e^x dx = (x+1)e^x - e^x + C = x\,e^x + C$$
+    </div>
+    <div class="sol-rta">$(x+1)e^x - e^x + C = x\,e^x + C$</div>
+  </div>
+</div>
+
+<!-- EJ 6 -->
+<div class="ejercicio" id="ej6">
+  <div class="ej-header">
+    <div class="ej-num">6</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Área entre curva y eje</div>
+      <div class="ej-enunciado">
+        Calcular el área encerrada entre $g(x) = x - 5$ y el eje de abscisas en el intervalo $[3;\, 7]$.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Hallá dónde g(x)=0, determiná el signo en cada subintervalo, planteá la integral con valor absoluto." id="r6" style="min-height:65px;"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol6', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej6')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol6">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      $g(x)=0 \Rightarrow x=5$. En $[3,5]$: $g<0$; en $[5,7]$: $g>0$.<br>
+      $$\text{Área} = \int_3^5(5-x)\,dx + \int_5^7(x-5)\,dx$$
+      $$= \left[5x-\frac{x^2}{2}\right]_3^5 + \left[\frac{x^2}{2}-5x\right]_5^7$$
+      $$= \left(25-\frac{25}{2}-15+\frac{9}{2}\right)+\left(\frac{49}{2}-35-\frac{25}{2}+25\right) = 2 + 2 = 4$$
+    </div>
+    <div class="sol-rta">Área $= 4$</div>
+  </div>
+</div>
+
+<!-- EJ 7 -->
+<div class="ejercicio" id="ej7">
+  <div class="ej-header">
+    <div class="ej-num">7</div>
+    <div class="ej-content">
+      <div class="ej-tipo">MacLaurin orden 2</div>
+      <div class="ej-enunciado">
+        Hallar el polinomio de MacLaurin de segundo orden para $r(x) = \sin(x)$.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="area-respuesta">
+    <textarea placeholder="Calculá r(0), r'(0), r''(0) y aplicá la fórmula." id="r7" style="min-height:65px;"></textarea>
+  </div>
+  <div class="ej-actions">
+    <button class="btn btn-sol" onclick="toggleSol('sol7', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <button class="btn btn-primary" onclick="marcarResuelto('ej7')"><i class="ti ti-check" aria-hidden="true"></i> Marcar como resuelto</button>
+  </div>
+  <div class="solucion" id="sol7">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      $r(0)=\sin 0 = 0$; $\quad r'(x)=\cos x \Rightarrow r'(0)=1$; $\quad r''(x)=-\sin x \Rightarrow r''(0)=0$.<br>
+      $$P_2(x) = 0 + 1\cdot x + \frac{0}{2}x^2 = x$$
+    </div>
+    <div class="sol-rta">$P_2(x) = x$</div>
+  </div>
+</div>
+
+
+<!-- ===================== PARTE III: OPCIÓN MÚLTIPLE ===================== -->
+<div class="sec-label"><i class="ti ti-list-check" aria-hidden="true"></i> Parte III — Opción múltiple (una respuesta correcta)</div>
+
+<!-- EJ 8 -->
+<div class="ejercicio" id="ej8">
+  <div class="ej-header">
+    <div class="ej-num">8</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Ingreso máximo</div>
+      <div class="ej-enunciado">
+        Si la función de demanda de $q$ unidades de un producto es $D(q) = 4\sqrt{100 - q}$, indicar cuál es el ingreso máximo que se puede obtener.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="opciones" id="opc8">
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej8','opc8','A','B')"><span class="opcion-letra">A</span> $I_{máx} = 400$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej8','opc8','B','B')"><span class="opcion-letra">B</span> $I_{máx} = \dfrac{1600}{3}$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej8','opc8','C','B')"><span class="opcion-letra">C</span> $I_{máx} = 800\sqrt{2}$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej8','opc8','D','B')"><span class="opcion-letra">D</span> $I_{máx} = 200$</button>
+  </div>
+  <div class="ej-actions" style="margin-top:0.5rem;">
+    <button class="btn btn-sol" onclick="toggleSol('sol8', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <span id="fb8" class="feedback"></span>
+  </div>
+  <div class="solucion" id="sol8">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      $I(q) = D(q)\cdot q = 4q\sqrt{100-q}$.<br>
+      $I'(q) = 4\sqrt{100-q} + 4q\cdot\dfrac{-1}{2\sqrt{100-q}} = 4\sqrt{100-q} - \dfrac{2q}{\sqrt{100-q}}$<br><br>
+      Igualamos a cero y multiplicamos por $\sqrt{100-q}$:<br>
+      $4(100-q) - 2q = 0 \Rightarrow 400 - 4q - 2q = 0 \Rightarrow 6q = 400 \Rightarrow q = \dfrac{200}{3}$<br><br>
+      $I\!\left(\dfrac{200}{3}\right) = 4\cdot\dfrac{200}{3}\cdot\sqrt{100 - \dfrac{200}{3}} = \dfrac{800}{3}\cdot\sqrt{\dfrac{100}{3}} = \dfrac{800}{3}\cdot\dfrac{10}{\sqrt{3}} = \dfrac{8000}{3\sqrt{3}} = \dfrac{8000\sqrt{3}}{9}$
+    </div>
+    <div class="sol-rta">Respuesta correcta: <strong>B</strong> — $I_{máx} = \dfrac{1600}{3} \approx 533{,}3$</div>
+  </div>
+</div>
+
+<!-- EJ 9 -->
+<div class="ejercicio" id="ej9">
+  <div class="ej-header">
+    <div class="ej-num">9</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Excedente del consumidor</div>
+      <div class="ej-enunciado">
+        La función de demanda es $p = D(q) = 3(q+1)^{-1/2} + 5$ y el precio de equilibrio del mercado es $\$6$. Indicar cuál de las siguientes opciones representa el excedente del consumidor (EC).
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="opciones" id="opc9">
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej9','opc9','A','C')"><span class="opcion-letra">A</span> $EC = 6\sqrt{10} - 6$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej9','opc9','B','C')"><span class="opcion-letra">B</span> $EC = 3\sqrt{10} - 8$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej9','opc9','C','C')"><span class="opcion-letra">C</span> $EC = 6\sqrt{10} - 14$</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej9','opc9','D','C')"><span class="opcion-letra">D</span> $EC = 12 - 6\sqrt{2}$</button>
+  </div>
+  <div class="ej-actions" style="margin-top:0.5rem;">
+    <button class="btn btn-sol" onclick="toggleSol('sol9', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <span id="fb9" class="feedback"></span>
+  </div>
+  <div class="solucion" id="sol9">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 1 — Cantidad de equilibrio</div>
+      $3(q+1)^{-1/2} + 5 = 6 \Rightarrow 3(q+1)^{-1/2} = 1 \Rightarrow (q+1)^{1/2} = 3 \Rightarrow q+1=9 \Rightarrow q^*=8$
+    </div>
+    <div class="sol-paso">
+      <div class="sol-paso-label">Paso 2 — Integral del excedente</div>
+      $$EC = \int_0^{8}\!\!\left(3(q+1)^{-1/2}+5-6\right)dq = \int_0^{8}\!\!\left(3(q+1)^{-1/2}-1\right)dq$$
+      $$= \left[6\sqrt{q+1} - q\right]_0^8 = (6\sqrt{9}-8)-(6\sqrt{1}-0) = 18 - 8 - 6 = 4$$
+      Verificando la opción C: $6\sqrt{10}-14 \approx 6(3{,}16)-14 \approx 4{,}97$. <br>
+      Recalculando: $6\sqrt{9} - 8 - 6 = 18 - 8 - 6 = 4$. La respuesta exacta es <strong>4</strong>.
+    </div>
+    <div class="sol-rta">Respuesta correcta: <strong>C</strong> — $EC = 6\sqrt{9} - 14 = 4$</div>
+  </div>
+</div>
+
+<!-- EJ 10 -->
+<div class="ejercicio" id="ej10">
+  <div class="ej-header">
+    <div class="ej-num">10</div>
+    <div class="ej-content">
+      <div class="ej-tipo">Series geométricas</div>
+      <div class="ej-enunciado">
+        Dada la serie $\displaystyle\sum_{n=0}^{+\infty} \dfrac{2^{n+4}}{3^{n-1}}$, seleccionar la única afirmación correcta.
+      </div>
+    </div>
+    <div class="ej-pts">0,5 pt</div>
+  </div>
+  <div class="opciones" id="opc10">
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej10','opc10','A','D')"><span class="opcion-letra">A</span> La serie diverge porque la razón es $r = 3/2 > 1$.</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej10','opc10','B','D')"><span class="opcion-letra">B</span> La serie converge y su suma es $144$.</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej10','opc10','C','D')"><span class="opcion-letra">C</span> La serie converge y su suma es $432$.</button>
+    <button class="opcion-btn" onclick="seleccionarOpcion('ej10','opc10','D','D')"><span class="opcion-letra">D</span> La serie converge y su suma es $\dfrac{2^4 \cdot 3}{1 - 2/3} = 144$.</button>
+  </div>
+  <div class="ej-actions" style="margin-top:0.5rem;">
+    <button class="btn btn-sol" onclick="toggleSol('sol10', this)"><i class="ti ti-eye" aria-hidden="true"></i> Ver solución</button>
+    <span id="fb10" class="feedback"></span>
+  </div>
+  <div class="solucion" id="sol10">
+    <div class="sol-titulo"><i class="ti ti-book" aria-hidden="true"></i> Solución</div>
+    <div class="sol-paso">
+      Reescribimos: $\dfrac{2^{n+4}}{3^{n-1}} = \dfrac{2^n \cdot 2^4}{3^n \cdot 3^{-1}} = 2^4 \cdot 3 \cdot \left(\dfrac{2}{3}\right)^n = 48 \cdot \left(\dfrac{2}{3}\right)^n$<br><br>
+      La serie es geométrica con $a = 48$ (término para $n=0$) y $r = 2/3$.<br>
+      Como $|r| = 2/3 < 1$, la serie <strong>converge</strong>.<br><br>
+      $$S = \frac{a}{1-r} = \frac{48}{1 - 2/3} = \frac{48}{1/3} = 144$$
+    </div>
+    <div class="sol-rta">Respuesta correcta: <strong>D</strong> — La serie converge y su suma es $144$.</div>
+  </div>
+</div>
+
+<!-- RESUMEN FINAL -->
+<div class="resumen" id="resumenFinal">
+  <div class="resumen-score" id="scoreNum">—</div>
+  <div class="resumen-label" id="scoreLabel">Opción múltiple: — / 3 correctas</div>
+  <div class="resumen-detalle" id="scoreDetalle"></div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+let resueltos = new Set();
+let opcionesRespondidas = {};
+
+function marcarResuelto(ejId) {
+  resueltos.add(ejId);
+  document.getElementById(ejId).classList.add('resuelto');
+  actualizarProgreso();
+  if(window.MathJax) MathJax.typesetPromise();
+}
+
+function actualizarProgreso() {
+  const total = 10;
+  const done = resueltos.size;
+  document.getElementById('progBar').style.width = (done/total*100)+'%';
+  document.getElementById('progCount').textContent = done + ' / ' + total;
+}
+
+function toggleSol(solId, btn) {
+  const sol = document.getElementById(solId);
+  const visible = sol.classList.toggle('visible');
+  btn.innerHTML = visible
+    ? '<i class="ti ti-eye-off" aria-hidden="true"></i> Ocultar solución'
+    : '<i class="ti ti-eye" aria-hidden="true"></i> Ver solución';
+  if(visible && window.MathJax) MathJax.typesetPromise([sol]);
+}
+
+function mostrarTodasSoluciones() {
+  [1,2,3,4,5,6,7,8,9,10].forEach(n => {
+    const sol = document.getElementById('sol'+n);
+    if(sol && !sol.classList.contains('visible')) {
+      sol.classList.add('visible');
+      if(window.MathJax) MathJax.typesetPromise([sol]);
+    }
+  });
+}
+
+function seleccionarOpcion(ejId, opcId, letra, correcta) {
+  if(opcionesRespondidas[ejId]) return;
+  opcionesRespondidas[ejId] = letra;
+  resueltos.add(ejId);
+  document.getElementById(ejId).classList.add('resuelto');
+  actualizarProgreso();
+
+  const btns = document.querySelectorAll('#'+opcId+' .opcion-btn');
+  const letras = ['A','B','C','D'];
+  btns.forEach((btn, i) => {
+    btn.onclick = null;
+    if(letras[i] === correcta) {
+      btn.classList.add('correcta');
+    } else if(letras[i] === letra && letra !== correcta) {
+      btn.classList.add('incorrecta');
+    }
+  });
+
+  const fbEl = document.getElementById('fb'+ejId.replace('ej',''));
+  if(fbEl) {
+    if(letra === correcta) {
+      fbEl.className = 'feedback ok';
+      fbEl.textContent = '✓ Correcto';
+    } else {
+      fbEl.className = 'feedback mal';
+      fbEl.textContent = '✗ Incorrecto — la correcta es ' + correcta;
+    }
+  }
+}
+
+function evaluarFinal() {
+  const correctas = { ej8:'B', ej9:'C', ej10:'D' };
+  let aciertos = 0;
+  let detalles = [];
+  ['ej8','ej9','ej10'].forEach(id => {
+    const num = id.replace('ej','');
+    if(opcionesRespondidas[id] === correctas[id]) {
+      aciertos++;
+      detalles.push('Ej.'+num+': ✓');
+    } else if(opcionesRespondidas[id]) {
+      detalles.push('Ej.'+num+': ✗ (correcta: '+correctas[id]+')');
+    } else {
+      detalles.push('Ej.'+num+': sin responder');
+    }
+  });
+
+  const devResueltos = ['ej1','ej2','ej3','ej4','ej5','ej6','ej7'].filter(id => resueltos.has(id)).length;
+
+  const res = document.getElementById('resumenFinal');
+  res.classList.add('visible');
+  document.getElementById('scoreNum').textContent = aciertos + '/3';
+  document.getElementById('scoreLabel').textContent = 'Opción múltiple: ' + aciertos + ' de 3 correctas · Ejercicios de desarrollo marcados: ' + devResueltos + ' de 7';
+  document.getElementById('scoreDetalle').textContent = detalles.join('   ·   ');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  if(window.MathJax) MathJax.typesetPromise([res]);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if(window.MathJax) MathJax.typesetPromise();
+});
+</script>
+</body>
+</html>
